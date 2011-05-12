@@ -295,7 +295,20 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
 
 			// look for special chars
 			switch(keyCode) {
-			case KeyEvent.KEYCODE_CAMERA:
+            // TODO: Handle option for Search key to send escape
+            // Potentially handle tab key as well if not already handled
+			case KeyEvent.KEYCODE_SEARCH:
+				boolean sendEscape = manager.prefs.getBoolean(PreferenceConstants.SEARCH, false);
+				if (sendEscape) {
+					// send ESCAPE code
+	                ((vt320)buffer).keyTyped(vt320.KEY_ESCAPE, ' ', 0);
+				}
+                break;
+            case KeyEvent.KEYCODE_TAB:
+                metaState &= ~(META_TAB | META_TRANSIENT);
+                bridge.transport.write(0x09);
+                return true;
+            case KeyEvent.KEYCODE_CAMERA:
 
 				// check to see which shortcut the camera button triggers
 				String camera = manager.prefs.getString(
